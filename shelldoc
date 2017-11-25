@@ -6,7 +6,7 @@ import traceback
 
 def main():
     parser = argparse.ArgumentParser(
-            description="A tool for document shell scripts")
+            description="A tool for documenting shell scripts")
     parser.add_argument("--input", "-i", required=True,
             help="Input file to process")
     parser.add_argument("--output", "-o", required=False,
