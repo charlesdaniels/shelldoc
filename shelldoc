@@ -27,7 +27,6 @@ def main():
         in_scriptdoc    = False
         in_fundoc       = False
         in_whitespace   = False
-        working_section = ""
         linum           = 0
         funame          = None
         sectitle        = ""
@@ -69,7 +68,7 @@ def main():
             if len(line) <= 0:
                 if in_whitespace == False:
                     in_whitespace = True
-                    working_section += "\n"
+                    fout.write("\n")
 
                 # no further processing required on this line
                 continue
@@ -90,9 +89,9 @@ def main():
             # strip off '#' and the first leading space
             line = line[2:]
 
-            if len(line) == 0:
+            if len(line) <= 0:
                 # this is a comment that contains only
-                working_section += "\n"
+                fout.write("\n")
                 continue
 
             if line[0] == '.':
@@ -136,8 +135,6 @@ def main():
                     in_fundoc = False
                     sectitle = None
 
-                    working_section += "\n\n"
-
                 else:
                     # decide which dict to use to select the section name
                     segdict = None
@@ -145,13 +142,6 @@ def main():
                         segdict = segments_scriptdoc
                     elif in_fundoc:
                         segdict = segments_fundoc
-                    else:
-                        # handle keywords not inside of .SCRIPTDOC or
-                        # .DOCUMENTS
-                        sys.stderr.write("FATAL (ln {}):".format(linum) +
-                                " encountered keyword '{}' ".format(line) +
-                                "outside of any valid documentation segment\n")
-                        exit(1)
 
                     if line not in segdict:
                         # handle lines beginning with . that are not valid
@@ -180,7 +170,7 @@ def main():
                         # syntax documentation is treated as preformatted
                         fout.write(" " * 4)
                     fout.write(line)
-                    fout.write("\n\n")
+                    fout.write("\n")
 
         fin.close()
         fout.close()
