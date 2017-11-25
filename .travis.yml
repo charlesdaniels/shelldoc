@@ -1,4 +1,5 @@
-language: bash
+language: bash, python
+python: 3.5
 
 os:
     - linux
