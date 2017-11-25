@@ -3,6 +3,9 @@ language: bash
 os:
     - linux
 
+install:
+    - pip3 install pep8
+
 script:
     - cd smoketest && ./do_test.sh < testcases.tsv
     - pep8 ./shelldoc
