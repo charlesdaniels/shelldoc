@@ -5,6 +5,7 @@ os:
 
 script:
     - cd smoketest && ./do_test.sh < testcases.tsv
+    - pep8 ./shelldoc
 
 notifications:
     email:
