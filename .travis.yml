@@ -5,3 +5,8 @@ os:
 
 script:
     - cd smoketest && ./do_test.sh < testcases.tsv
+
+notifications:
+    email:
+        on_success: never
+        on_failure: always
