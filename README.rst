@@ -4,6 +4,12 @@ ShellDoc
 
 .. contents::
 
+Build Status
+============
+
+.. image:: https://travis-ci.org/charlesdaniels/shelldoc.svg?branch=master
+    :target: https://travis-ci.org/charlesdaniels/shelldoc
+
 Overview
 ========
 
