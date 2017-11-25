@@ -4,20 +4,24 @@ import argparse
 import sys
 import traceback
 
+
 def main():
     parser = argparse.ArgumentParser(
-            description="A tool for documenting shell scripts")
+        description="A tool for documenting shell scripts")
+
     parser.add_argument("--input", "-i", required=True,
-            help="Input file to process")
+                        help="Input file to process")
     parser.add_argument("--output", "-o", required=False,
-            default="/dev/stdout",
-            help="Output file for generated documentation, stdout by default.")
+                        default="/dev/stdout",
+                        help="Output file for generated documentation, " +
+                        "stdout by default.")
     parser.add_argument("--doctitle", "-t", required=False,
-            default=None, help="Set document title, default is input filename")
+                        default=None,
+                        help="Set document title, default is input filename")
     parser.add_argument("--notoc", "-n", action="store_true", default=False,
-            help="Do not include ..contents:: in output")
+                        help="Do not include ..contents:: in output")
     parser.add_argument("--notitle", "-e", action="store_true", default=False,
-            help="Do not include the document title in output")
+                        help="Do not include the document title in output")
     args = parser.parse_args()
 
     try:
@@ -33,14 +37,14 @@ def main():
 
         # these dicts associate shelldoc keywords with the section titles
         # that they generate
-        segments_scriptdoc = {".DESCRIPTION" : "Description",
-                             ".SYNTAX"       : "Syntax",
-                             ".LICENSE"      : "License",
-                             ".CHANGELOG"    : "Changelog",
-                             ".AUTHOR"       : "Author"}
+        segments_scriptdoc = {".DESCRIPTION"  : "Description",
+                              ".SYNTAX"       : "Syntax",
+                              ".LICENSE"      : "License",
+                              ".CHANGELOG"    : "Changelog",
+                              ".AUTHOR"       : "Author"}
 
         segments_fundoc = {".DESCRIPTION" : "Description",
-                          ".SYNTAX"      : "Syntax"}
+                           ".SYNTAX"      : "Syntax"}
 
         doctitle = args.doctitle
         if doctitle is None:
@@ -66,7 +70,7 @@ def main():
             # any run of blank lines int he input produces one blank line in
             # the generated documentation
             if len(line) <= 0:
-                if in_whitespace == False:
+                if in_whitespace is False:
                     in_whitespace = True
                     fout.write("\n")
 
@@ -78,8 +82,8 @@ def main():
 
             if len(line) <= 0:
                 sys.stderr.write("WARNING (ln {}): ".format(linum) +
-                    "'{}' contains 0 characters".format(line) +
-                    " this should never happen\n")
+                                 "'{}' contains 0 characters".format(line) +
+                                 " this should never happen\n")
                 continue
 
             if line[0] != '#':
@@ -100,8 +104,8 @@ def main():
                     # handle starting a script-level document
                     if in_fundoc:
                         sys.stderr.write("FATAL (ln {}):".format(linum) +
-                            " found .SCRIPTDOC while " +
-                            "parsing function documentation\n")
+                                         " found .SCRIPTDOC while " +
+                                         "parsing function documentation\n")
                         exit(1)
                     else:
                         in_scriptdoc = True
@@ -110,14 +114,14 @@ def main():
                     # handle starting a function-level document
                     if in_scriptdoc:
                         sys.stderr.write("FATAL (ln {}):".format(linum) +
-                                " found .DOCUMENTS while parsing script " +
-                                " documentation\n")
+                                         " found .DOCUMENTS while parsing " +
+                                         " script documentation\n")
                         exit(1)
                     if len(line.split()) < 2:
                         # throw an error if the function name is not specified
                         sys.stderr.write("FATAL (ln {}): ".format(linum) +
-                            "found .DOCUMENTS with no function name " +
-                            "specified\n")
+                                         "found .DOCUMENTS with no function" +
+                                         " name specified\n")
                         exit(1)
                     else:
                         in_fundoc = True
@@ -147,8 +151,9 @@ def main():
                         # handle lines beginning with . that are not valid
                         # keywords
                         sys.stderr.write("FATAL (ln {}):".format(linum) +
-                            " '{}' is not a valid keyword\n".format(line))
-                        exit (1)
+                                         " '{}' is not a valid keyword\n"
+                                         .format(line))
+                        exit(1)
 
                     # output the section title for this keyword
                     sectitle = segdict[line]
