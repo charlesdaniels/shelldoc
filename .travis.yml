@@ -5,11 +5,11 @@ os:
     - linux
 
 install:
-    - pip3 install pep8
+    - pip3 install pycodestyle
 
 script:
     - cd smoketest && ./do_test.sh < testcases.tsv
-    - pep8 ./shelldoc
+    - pycodestyle ./shelldoc
 
 notifications:
     email:
