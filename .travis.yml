@@ -1,0 +1,7 @@
+language: bash
+
+os:
+    - linux
+
+script:
+    - cd smoketest && ./do_test.sh < testcases.tsv
