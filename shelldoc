@@ -87,9 +87,8 @@ def main():
                 # don't process source code
                 continue
 
-            # strip off '#' and leading spaces
-            line = line[1:]
-            line = line.strip()
+            # strip off '#' and the first leading space
+            line = line[2:]
 
             if len(line) == 0:
                 # this is a comment that contains only

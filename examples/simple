@@ -8,6 +8,10 @@
 
 # detailed script description goes here
 
+# * this is a bulleted list
+#   + This item is indented
+# * this item is not indented
+
 # .SYNTAX
 
 #   $1 . . . description of first argument

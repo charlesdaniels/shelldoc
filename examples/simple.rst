@@ -12,17 +12,23 @@ Description
 
 detailed script description goes here
 
+* this is a bulleted list
+
+  + This item is indented
+
+* this item is not indented
+
 
 Syntax
 ======
 
 ::
 
-    $1 . . . description of first argument
+      $1 . . . description of first argument
 
-    $2 . . . description of second argument
+      $2 . . . description of second argument
 
-    $@ . . . description of remaining arguments
+      $@ . . . description of remaining arguments
 
 
 License
@@ -61,9 +67,9 @@ Syntax
 
 ::
 
-    $1 . . . description of first argument
+       $1 . . . description of first argument
 
-    $2 . . . description of second argument
+       $2 . . . description of second argument
 
-    $@ . . . description of remaining arguments
+       $@ . . . description of remaining arguments
 

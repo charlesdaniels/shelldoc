@@ -61,8 +61,18 @@ Both types of segments end with::
 All commented lines in the input between a segment opening and it's associated
 ``.ENDOC`` constitute a *segment*.
 
-Note that all leading whitespace before and after the ``#`` symbol, plus the
-``#`` symbol are stripped.
+Note that all leading whitespace to the ``#`` symbol, the ``#``, and the
+**first** character after it are stripped. For example, consider this input::
+
+        # some text
+        #   some more text
+        #one more line of text
+
+This would produce the output::
+
+        some text
+          some more text
+        ne more line of text
 
 Within a *segment*, there are a number of valid *sections*. Sections begin
 with a line of the format::
@@ -162,12 +172,12 @@ Roadmap
 While ShellDoc is sufficiently complete to be useful, there are a number of
 features that could be added to improve it, some that come to mind include:
 
-* Intelligently handle striping left-handle white-space to allow indentations
-  in the documentation.
 * Some better syntax to handle the functionality of ``.SYNTAX``.
 * Break out ``shelldoc`` into more modular components.
   + Add switches to extract individual segments and sections.
   + Build a library/API other Python code can use to extract individual segments and sections.
+  + Add unit tests for each component.
+* Add end-to-end smoke testing.
 
 Contribution
 ============
