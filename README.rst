@@ -168,15 +168,17 @@ features that could be added to improve it, some that come to mind include:
 * Break out ``shelldoc`` into more modular components.
   + Add switches to extract individual segments and sections.
   + Build a library/API other Python code can use to extract individual
-    segments and sections.
+segments and sections.
 
 Contribution
 ============
 
-Contributions in the for of suggestions, bug reports, documentation, and/or
-source code are graciously accepted.
+Contributions in the form of suggestions, bug reports, documentation, and/or
+source code are gratefully accepted.
 
 License
 =======
 
-See the [LICENSE](./LICENSE) file.
+See the LICENSE_ file.
+
+.. _LICENSE: ./LICENSE
