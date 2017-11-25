@@ -11,7 +11,8 @@
 
 # * test description (human readable)
 # * input file to use with shelldoc
-# * file containing the expected output
+# * file containing the expected output (not including stderr)
+# * expected return code from shelldoc
 # * (optional) arguments to pass to shelldoc (should not include ``--input`` or
 # ``--output``)
 
@@ -47,7 +48,8 @@ while read -r testcase ; do
 	TEST_DESC="$(echo "$testcase" | cut -f 1)"
 	TEST_INPUT="$(echo "$testcase" | cut -f 2)"
 	TEST_EXPECTED="$(echo "$testcase" | cut -f 3)"
-	TEST_ARGS="$(echo "$testcase" | cut -f 4)"
+	TEST_EXPECTED_RETCODE="$(echo "$testcase" | cut -f 4)"
+	TEST_ARGS="$(echo "$testcase" | cut -f 5)"
 	TEST_OUTPUT="/tmp/$(uuidgen)"
 
 	printf "Running test '$TEST_DESC'... "
@@ -72,18 +74,27 @@ while read -r testcase ; do
 	RETCODE=$?
 	TEST_DIFF="$(diff "$TEST_OUTPUT" "$TEST_EXPECTED" 2>&1)"
 
-	if [ "$RETCODE" -ne 0 ] ; then
+	if [ "$RETCODE" -ne "$TEST_EXPECTED_RETCODE" ] ; then
 		echo "FAIL"
-		echo "\tShellDoc returned an error\n"
-		echo "$TEST_STDERR" | while read -r ln ; do echo "\t$ln" ; done
+		echo "\tShellDoc return code '$RETCODE' did not match the expected '$TEST_EXPECTED_RETCODE'\n"
+		echo "\tStandard error from shelldoc:\n\n"
+		echo "$TEST_STDERR" | while read -r ln ; do echo "\t\t$ln" ; done
+		echo ""
 		FAILED_COUNT=$(echo "$FAILED_COUNT + 1" | bc)
 
 	elif [ "$( echo "$(echo "$TEST_DIFF" | wc -l) - 1" | bc)" -ne 0 ] ; then
 		echo "FAIL"
 		echo "\tTest output did not match expected output\n"
-		echo "$TEST_DIFF" | while read -r ln ; do echo "\t$ln" ; done
-		FAILED_COUNT=$(echo "$FAILED_COUNT + 1" | bc)
+		echo "\tExpected output was: \n"
+		while read -r ln ; do echo "\t\t$ln" ; done < "$TEST_EXPECTED"
+		echo "\n\n\tActual output was: \n"
+		while read -r ln ; do echo "\t\t$ln" ; done < "$TEST_OUTPUT"
+		echo "\n\n\tDifference between actual and expected output was: \n\n"
+		echo "$TEST_DIFF" | while read -r ln ; do echo "\t\t$ln" ; done
+		echo "\n\tStandard error from shelldoc:\n\n"
+		echo "$TEST_STDERR" | while read -r ln ; do echo "\t\t$ln" ; done
 		echo ""
+		FAILED_COUNT=$(echo "$FAILED_COUNT + 1" | bc)
 
 	else
 		echo "PASS"
