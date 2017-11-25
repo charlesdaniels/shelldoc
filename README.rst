@@ -16,7 +16,9 @@ While any language using ``#`` as a comment character can be used with
 ShellDoc, keep in mind that it is specifically tailored for shell scripting
 languages in the `sh` family.
 
-ShellDoc is loosely inspired by the PowerShell documentation format.
+ShellDoc is loosely inspired by the PowerShell documentation format, and
+is written in Python 3. ShellDoc has no dependencies beyond the Python 3
+standard library.
 
 Key Features
 ------------
@@ -111,6 +113,18 @@ Would result in the output::
 
         paragraph 2
 
+The ``.SYNTAX`` Section
+-----------------------
+
+All sections except for ``.SYNTAX`` are passed directly through to the output
+without modification, the Syntax section is a bit different. Namely, it is
+rendered as a reStructuredText pre-formatted code block (i.e. it is preceded by
+a ``::``, and each line in the Syntax section is indented by four spaces).
+
+This design decision was made because there are many common plain-text styles
+and formats that do not translate well to reST.
+
+
 ShellDoc Usage
 --------------
 
@@ -141,3 +155,28 @@ Please see the examples_ folder.
 
 .. _reStructuredText: http://docutils.sourceforge.net/rst.html#user-documentation
 .. _examples: ./examples/
+
+Roadmap
+=======
+
+While ShellDoc is sufficiently complete to be useful, there are a number of
+features that could be added to improve it, some that come to mind include:
+
+* Intelligently handle striping left-handle white-space to allow indentations
+  in the documentation.
+* Some better syntax to handle the functionality of ``.SYNTAX``.
+* Break out ``shelldoc`` into more modular components.
+  + Add switches to extract individual segments and sections.
+  + Build a library/API other Python code can use to extract individual
+    segments and sections.
+
+Contribution
+============
+
+Contributions in the for of suggestions, bug reports, documentation, and/or
+source code are graciously accepted.
+
+License
+=======
+
+See the [LICENSE](./LICENSE) file.
