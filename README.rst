@@ -167,8 +167,7 @@ features that could be added to improve it, some that come to mind include:
 * Some better syntax to handle the functionality of ``.SYNTAX``.
 * Break out ``shelldoc`` into more modular components.
   + Add switches to extract individual segments and sections.
-  + Build a library/API other Python code can use to extract individual
-segments and sections.
+  + Build a library/API other Python code can use to extract individual segments and sections.
 
 Contribution
 ============
