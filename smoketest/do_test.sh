@@ -38,7 +38,12 @@
 SHELLDOC="../shelldoc"
 FAILED_COUNT=0
 
-while read -r testcase ; do 
+while read -r testcase ; do
+	if [ "$(echo "$testcase" | tr -d ' ' | tr -d '\t' | tr -d '\r' | tr -d '\n')" = "" ] ; then
+		# this line is blank, skip it
+		continue
+	fi
+
 	TEST_DESC="$(echo "$testcase" | cut -f 1)"
 	TEST_INPUT="$(echo "$testcase" | cut -f 2)"
 	TEST_EXPECTED="$(echo "$testcase" | cut -f 3)"
@@ -79,7 +84,7 @@ while read -r testcase ; do
 		echo "$TEST_DIFF" | while read -r ln ; do echo "\t$ln" ; done
 		FAILED_COUNT=$(echo "$FAILED_COUNT + 1" | bc)
 		echo ""
-	
+
 	else
 		echo "PASS"
 	fi
