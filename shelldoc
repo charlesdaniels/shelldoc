@@ -1,0 +1,197 @@
+#!/usr/bin/env python3
+
+import argparse
+import sys
+import traceback
+
+def main():
+    parser = argparse.ArgumentParser(
+            description="A tool for document shell scripts")
+    parser.add_argument("--input", "-i", required=True,
+            help="Input file to process")
+    parser.add_argument("--output", "-o", required=False,
+            default="/dev/stdout",
+            help="Output file for generated documentation, stdout by default.")
+    parser.add_argument("--doctitle", "-t", required=False,
+            default=None, help="Set document title, default is input filename")
+    parser.add_argument("--notoc", "-n", action="store_true", default=False,
+            help="Do not include ..contents:: in output")
+    parser.add_argument("--notitle", "-e", action="store_true", default=False,
+            help="Do not include the document title in output")
+    args = parser.parse_args()
+
+    try:
+        fin  = open(args.input, 'r')
+        fout = open(args.output, 'w')
+
+        in_scriptdoc    = False
+        in_fundoc       = False
+        in_whitespace   = False
+        working_section = ""
+        linum           = 0
+        funame          = None
+        sectitle        = ""
+
+        # these dicts associate shelldoc keywords with the section titles
+        # that they generate
+        segments_scriptdoc = {".DESCRIPTION" : "Description",
+                             ".SYNTAX"       : "Syntax",
+                             ".LICENSE"      : "License",
+                             ".CHANGELOG"    : "Changelog",
+                             ".AUTHOR"       : "Author"}
+
+        segments_fundoc = {".DESCRIPTION" : "Description",
+                          ".SYNTAX"      : "Syntax"}
+
+        doctitle = args.doctitle
+        if doctitle is None:
+            doctitle = args.input
+        if not args.notitle:
+            doctitle = "Documentation for ``{}``".format(doctitle)
+            fout.write("*" * len(doctitle))
+            fout.write("\n")
+            fout.write(doctitle)
+            fout.write("\n")
+            fout.write("*" * len(doctitle))
+            fout.write("\n")
+            fout.write("\n")
+        if not args.notoc:
+            fout.write(".. contents::")
+            fout.write("\n")
+            fout.write("\n")
+
+        for line in fin:
+            linum += 1
+            line = line.strip()
+
+            # any run of blank lines int he input produces one blank line in
+            # the generated documentation
+            if len(line) <= 0:
+                if in_whitespace == False:
+                    in_whitespace = True
+                    working_section += "\n"
+
+                # no further processing required on this line
+                continue
+
+            else:
+                in_whitespace = False
+
+            if len(line) <= 0:
+                sys.stderr.write("WARNING (ln {}): ".format(linum) +
+                    "'{}' contains 0 characters".format(line) +
+                    " this should never happen\n")
+                continue
+
+            if line[0] != '#':
+                # don't process source code
+                continue
+
+            # strip off '#' and leading spaces
+            line = line[1:]
+            line = line.strip()
+
+            if len(line) == 0:
+                # this is a comment that contains only
+                working_section += "\n"
+                continue
+
+            if line[0] == '.':
+                # we have hit a shelldoc keyword
+                if line == ".SCRIPTDOC":
+                    # handle starting a script-level document
+                    if in_fundoc:
+                        sys.stderr.write("FATAL (ln {}):".format(linum) +
+                            " found .SCRIPTDOC while " +
+                            "parsing function documentation\n")
+                        exit(1)
+                    else:
+                        in_scriptdoc = True
+
+                elif line.split()[0] == ".DOCUMENTS":
+                    # handle starting a function-level document
+                    if in_scriptdoc:
+                        sys.stderr.write("FATAL (ln {}):".format(linum) +
+                                " found .DOCUMENTS while parsing script " +
+                                " documentation\n")
+                        exit(1)
+                    if len(line.split()) < 2:
+                        # throw an error if the function name is not specified
+                        sys.stderr.write("FATAL (ln {}): ".format(linum) +
+                            "found .DOCUMENTS with no function name " +
+                            "specified\n")
+                        exit(1)
+                    else:
+                        in_fundoc = True
+                        funame = " ".join(line.split()[1:])
+                        fout.write("\n\n")
+                        title = \
+                            "Documentation for Function ``{}``".format(funame)
+                        fout.write(title)
+                        fout.write("\n")
+                        fout.write('=' * len(title))
+                        fout.write("\n\n")
+
+                elif line == ".ENDOC":
+                    in_scriptdoc = False
+                    in_fundoc = False
+                    sectitle = None
+
+                    working_section += "\n\n"
+
+                else:
+                    # decide which dict to use to select the section name
+                    segdict = None
+                    if in_scriptdoc:
+                        segdict = segments_scriptdoc
+                    elif in_fundoc:
+                        segdict = segments_fundoc
+                    else:
+                        # handle keywords not inside of .SCRIPTDOC or
+                        # .DOCUMENTS
+                        sys.stderr.write("FATAL (ln {}):".format(linum) +
+                                " encountered keyword '{}' ".format(line) +
+                                "outside of any valid documentation segment\n")
+                        exit(1)
+
+                    if line not in segdict:
+                        # handle lines beginning with . that are not valid
+                        # keywords
+                        sys.stderr.write("FATAL (ln {}):".format(linum) +
+                            " '{}' is not a valid keyword\n".format(line))
+                        exit (1)
+
+                    # output the section title for this keyword
+                    sectitle = segdict[line]
+                    fout.write("\n" + sectitle + "\n")
+                    underline_ch = "="
+                    if in_fundoc:
+                        underline_ch = "-"
+                    fout.write(underline_ch * len(sectitle))
+                    fout.write("\n\n")
+
+                    if sectitle == "Syntax":
+                        fout.write("::\n\n")
+
+            else:
+                # this is part of the documentation body
+
+                if in_scriptdoc or in_fundoc:
+                    if sectitle == "Syntax":
+                        # syntax documentation is treated as preformatted
+                        fout.write(" " * 4)
+                    fout.write(line)
+                    fout.write("\n\n")
+
+        fin.close()
+        fout.close()
+
+    except Exception as e:
+        sys.stderr.write("FATAL: encountered exception: {}\n".format(e))
+        exc_info = sys.exc_info()
+        for ln in ''.join(traceback.format_exception(*exc_info)).split('\n'):
+            sys.stderr.write("TRACEBACK: {}\n".format(ln.strip()))
+
+
+if __name__ == "__main__":
+    main()

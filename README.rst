@@ -1,0 +1,143 @@
+########
+ShellDoc
+########
+
+.. contents::
+
+Overview
+========
+
+ShellDoc is a tool for generating reStructuredText_ formatted documentation
+from shell scripts, or any programming language that uses the ``#`` symbol
+to denote comments. This generally makes it useful as a documentation generator
+for languages that do not have documentation generators.
+
+While any language using ``#`` as a comment character can be used with
+ShellDoc, keep in mind that it is specifically tailored for shell scripting
+languages in the `sh` family.
+
+ShellDoc is loosely inspired by the PowerShell documentation format.
+
+Key Features
+------------
+
+* Language-agnostic; ShellDoc does not attempt to parse or understand the
+  documented source code at all - only lines that begin with `#` are even
+  considered by ShellDoc.
+
+* Standalone `.rst` output can be used with Sphinx, or with `rst2pdf`.
+
+* Documentation syntax is human-readable, and every easy to learn.
+
+* Stream-oriented, single-pass design make ShellDoc safe to use in
+  pipelines.
+
+  + **HINT**: use ``--input=/dev/stdin`` to accept input from pipes.
+
+
+How to Document Scripts with ShellDoc
+=====================================
+
+ShellDoc understands two types of documentation: documentation for scripts, and
+documentation for functions. Either or both can be present in a single input
+file. Documentation is broken into logical *segments*, which are further broken
+down into *sections*.
+
+Script-level documentation begins with the following line (*segment opening*)::
+
+        # .SCRIPTDOC
+
+Function-level documentation begins with the following line (*segment
+opening*)::
+
+        # .DOCUMENTS functionname
+
+Both types of segments end with::
+
+        # .ENDOC
+
+All commented lines in the input between a segment opening and it's associated
+``.ENDOC`` constitute a *segment*.
+
+Note that all leading whitespace before and after the ``#`` symbol, plus the
+``#`` symbol are stripped.
+
+Within a *segment*, there are a number of valid *sections*. Sections begin
+with a line of the format::
+
+        # .SECTION_TYPE
+
+And end either at ``.ENDOC`` or when the next section begins.
+
+The following section types are valid for script-level segments:
+
+* ``.DESCRIPTION``
+* ``.SYNTAX``
+* ``.LICENSE``
+* ``.CHANGELOG``
+* ``.AUTHOR``
+
+The following section types are valid for function-level segments:
+
+* ``.DESCRIPTION``
+* ``.SYNTAX``
+
+
+Aside from segment openings, ``.ENDOC`` statements, and section openings, all
+other lines of input that begin with ``#`` and are part of a segment/section
+are passed through unmodified (except for leading and trailing whitespace being
+stripped).
+
+Note that empty commented lines are preserved, for example::
+
+        # some words
+        #
+        #
+        #
+
+
+results in the output ``some words`` followed by 3 blank lines.
+
+Runs of empty lines (containing only whitespace) imply a single blank line
+in the output. For example::
+
+        # paragraph 1
+        #
+        # paragraph 2
+
+Would result in the output::
+
+        paragraph 1
+
+        paragraph 2
+
+ShellDoc Usage
+--------------
+
+::
+
+
+        usage: shelldoc [-h] --input INPUT [--output OUTPUT] [--doctitle DOCTITLE]
+                        [--notoc] [--notitle]
+
+        A tool for document shell scripts
+
+        optional arguments:
+          -h, --help            show this help message and exit
+          --input INPUT, -i INPUT
+                                Input file to process
+          --output OUTPUT, -o OUTPUT
+                                Output file for generated documentation, stdout by
+                                default.
+          --doctitle DOCTITLE, -t DOCTITLE
+                                Set document title, default is input filename
+          --notoc, -n           Do not include ..contents:: in output
+          --notitle, -e         Do not include the document title in output
+
+Examples
+--------
+
+Please see the examples_ folder.
+
+.. _reStructuredText: http://docutils.sourceforge.net/rst.html#user-documentation
+.. _examples: ./examples/

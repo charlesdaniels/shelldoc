@@ -1,0 +1,54 @@
+#!/bin/sh
+
+# .SCRIPTDOC
+
+# Script synopsis goes here
+
+# .DESCRIPTION
+
+# detailed script description goes here
+
+# .SYNTAX
+
+#   $1 . . . description of first argument
+#
+#   $2 . . . description of second argument
+#
+#   $@ . . . description of remaining arguments
+
+# .LICENSE
+
+# script license goes here
+
+# .CHANGELOG
+
+# script chagenlog goes here
+
+# .AUTHOR
+
+# script authors go here
+
+# .ENDOC
+
+
+# .DOCUMENTS hello
+
+# this is the synopsis
+
+# .DESCRIPTION
+
+# this is a detailed description of the function
+
+# .SYNTAX
+#
+#    $1 . . . description of first argument
+#
+#    $2 . . . description of second argument
+#
+#    $@ . . . description of remaining arguments
+
+# .ENDOC
+
+hello () {
+    echo Hello!
+}
