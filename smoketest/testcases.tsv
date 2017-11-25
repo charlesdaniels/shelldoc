@@ -1,0 +1,6 @@
+blank input produces blank output with notoc and notitle	blank.in	blank.out	--notoc --notitle
+blank input produces title only with notoc	blank.in	blanktitle.out	--notoc
+blank input produce toc only with notitle	blank.in	blanktoc.out	--notitle
+blank input produces toc and title correctly	blank.in	blankboth.out
+title can be set with doctitle	blank.in	doctitle.out	--doctitle testtitle --notoc
+
