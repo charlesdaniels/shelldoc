@@ -3,6 +3,8 @@
 import argparse
 import sys
 import traceback
+import os
+import pathlib
 
 
 def main():
@@ -15,14 +17,27 @@ def main():
                         default="/dev/stdout",
                         help="Output file for generated documentation, " +
                         "stdout by default.")
-    parser.add_argument("--doctitle", "-t", required=False,
-                        default=None,
-                        help="Set document title, default is input filename")
+
+    titlehandling = parser.add_mutually_exclusive_group(required=False)
+    titlehandling.add_argument("--doctitle", "-t", required=False,
+                               default=None,
+                               help="Set document title, default is input " +
+                               "filename")
+    titlehandling.add_argument("--titledepth", "-d", type=int, default=None,
+                               help="Set the document title to it's basename" +
+                               " prefixed with titledepth many parent " +
+                               " directories (0 for basename only)")
+
     parser.add_argument("--notoc", "-n", action="store_true", default=False,
                         help="Do not include ..contents:: in output")
     parser.add_argument("--notitle", "-e", action="store_true", default=False,
                         help="Do not include the document title in output")
     args = parser.parse_args()
+
+    if args.titledepth is not None:
+        if args.titledepth < 0:
+            sys.stderr.write("FATAL: titledepth cannot be less than 0\n")
+            exit(1)
 
     try:
         fin  = open(args.input, 'r')
@@ -48,7 +63,17 @@ def main():
 
         doctitle = args.doctitle
         if doctitle is None:
-            doctitle = args.input
+            if args.titledepth is not None:
+                # ifpath will be a type of the form:
+                # ('//', 'some', 'path'), which corrosponds to '/some/path'
+                ifpath = pathlib.PurePath(os.path.realpath(args.input)).parts
+
+                # this is a title, not something we are going to path to, so
+                # we use '/' on all platforms.
+                doctitle = '/'.join(ifpath[-1 * (args.titledepth + 1):])
+            else:
+                doctitle = args.input
+
         if not args.notitle:
             doctitle = "Documentation for ``{}``".format(doctitle)
             fout.write("*" * len(doctitle))

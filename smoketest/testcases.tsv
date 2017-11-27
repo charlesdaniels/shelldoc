@@ -11,3 +11,6 @@ function sections should produce correct headers	funcsects.in	funcsects.out	0	--
 script sections should not work in function documentation	scriptfunc.in	scriptfunc.out	1	--notitle --notoc
 indentation in documents should be handled correctly	indent.in	indent.out	0	--notitle --notoc
 line breaks in documents should be handled correctly	linebreak.in	linebreak.out	0	--notitle --notoc
+doctitle and titledepth are mutually exclusive	blank.in	blank.out	2	--notoc --titledepth 1 --doctitle smoketest
+titledepth works correctly at depth 0	blank.in	depth0.out	0	--notoc --titledepth 0
+titledepth works correctly at depth 1	blank.in	depth1.out	0	--notoc --titledepth 1
