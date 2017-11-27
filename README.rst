@@ -146,11 +146,11 @@ ShellDoc Usage
 
 ::
 
+        usage: shelldoc [-h] --input INPUT [--output OUTPUT | --prefix PREFIX]
+                        [--doctitle DOCTITLE | --titledepth TITLEDEPTH] [--notoc]
+                        [--notitle]
 
-        usage: shelldoc [-h] --input INPUT [--output OUTPUT] [--doctitle DOCTITLE]
-                        [--notoc] [--notitle]
-
-        A tool for document shell scripts
+        A tool for documenting shell scripts
 
         optional arguments:
           -h, --help            show this help message and exit
@@ -159,8 +159,18 @@ ShellDoc Usage
           --output OUTPUT, -o OUTPUT
                                 Output file for generated documentation, stdout by
                                 default.
+          --prefix PREFIX, -p PREFIX
+                                Output file is written into this directory, and file
+                                is named according to document title with / replaced
+                                with _. This is specifically intended to be used in
+                                conjunction with --titledepth for generating docs for
+                                Sphix or similar.
           --doctitle DOCTITLE, -t DOCTITLE
                                 Set document title, default is input filename
+          --titledepth TITLEDEPTH, -d TITLEDEPTH
+                                Set the document title to it's basename prefixed with
+                                titledepth many parent directories (0 for basename
+                                only)
           --notoc, -n           Do not include ..contents:: in output
           --notitle, -e         Do not include the document title in output
 
