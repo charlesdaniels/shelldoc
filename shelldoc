@@ -13,10 +13,21 @@ def main():
 
     parser.add_argument("--input", "-i", required=True,
                         help="Input file to process")
-    parser.add_argument("--output", "-o", required=False,
-                        default="/dev/stdout",
-                        help="Output file for generated documentation, " +
-                        "stdout by default.")
+
+    outputhandling = parser.add_mutually_exclusive_group(required=False)
+
+    outputhandling.add_argument("--output", "-o", required=False,
+                                default="/dev/stdout",
+                                help="Output file for generated " +
+                                "documentation, stdout by default.")
+    outputhandling.add_argument("--prefix", "-p", required=False,
+                                default=None,
+                                help="Output file is written into this " +
+                                "directory, and file is named according " +
+                                "to document title with / replaced with _" +
+                                ". This is specifically intended to be " +
+                                "used in conjunction with --titledepth " +
+                                "for generating docs for Sphix or similar.")
 
     titlehandling = parser.add_mutually_exclusive_group(required=False)
     titlehandling.add_argument("--doctitle", "-t", required=False,
@@ -39,7 +50,32 @@ def main():
             sys.stderr.write("FATAL: titledepth cannot be less than 0\n")
             exit(1)
 
+    if args.prefix is not None:
+        args.prefix = os.path.realpath(args.prefix)
+        if not os.path.exists(args.prefix):
+            sys.stderr.write("FATAL: prefix '{}' does not exist"
+                             .format(args.prefix))
+            exit(1)
+
     try:
+        doctitle = args.doctitle
+        if doctitle is None:
+            if args.titledepth is not None:
+                # ifpath will be a type of the form:
+                # ('//', 'some', 'path'), which corrosponds to '/some/path'
+                ifpath = pathlib.PurePath(os.path.realpath(args.input)).parts
+
+                # this is a title, not something we are going to path to, so
+                # we use '/' on all platforms.
+                doctitle = '/'.join(ifpath[-1 * (args.titledepth + 1):])
+            else:
+                doctitle = args.input
+
+        if args.prefix is not None:
+            args.output = "" + \
+                os.path.join(args.prefix, doctitle.replace("/", "_")) + \
+                ".rst"
+
         fin  = open(args.input, 'r')
         fout = open(args.output, 'w')
 
@@ -60,19 +96,6 @@ def main():
 
         segments_fundoc = {".DESCRIPTION" : "Description",
                            ".SYNTAX"      : "Syntax"}
-
-        doctitle = args.doctitle
-        if doctitle is None:
-            if args.titledepth is not None:
-                # ifpath will be a type of the form:
-                # ('//', 'some', 'path'), which corrosponds to '/some/path'
-                ifpath = pathlib.PurePath(os.path.realpath(args.input)).parts
-
-                # this is a title, not something we are going to path to, so
-                # we use '/' on all platforms.
-                doctitle = '/'.join(ifpath[-1 * (args.titledepth + 1):])
-            else:
-                doctitle = args.input
 
         if not args.notitle:
             doctitle = "Documentation for ``{}``".format(doctitle)

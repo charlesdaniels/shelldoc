@@ -14,3 +14,4 @@ line breaks in documents should be handled correctly	linebreak.in	linebreak.out	
 doctitle and titledepth are mutually exclusive	blank.in	blank.out	2	--notoc --titledepth 1 --doctitle smoketest
 titledepth works correctly at depth 0	blank.in	depth0.out	0	--notoc --titledepth 0
 titledepth works correctly at depth 1	blank.in	depth1.out	0	--notoc --titledepth 1
+prefix is mutually exclusive with output	blank.in	blank.out	2	--notoc --notitle --prefix /tmp
