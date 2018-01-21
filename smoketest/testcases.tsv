@@ -5,7 +5,7 @@ blank input produces toc and title correctly	blank.in	blankboth.out	0
 title can be set with doctitle	blank.in	doctitle.out	0	--doctitle testtitle --notoc
 starting a segment inside another segment should fail	doubleseg.in	blank.out	1	--notitle --notoc
 invalid section opening should fail	invalidsect.in	oneline.out	1	--notitle --notoc
-section opening outside of segment should not fail	sectoutside.in	blank.out	0	--notitle --notoc
+section opening outside of segment should not fail	sectoutside.in	blank_3l.out	0	--notitle --notoc
 script sections should produce correct headers	scriptsects.in	scriptsects.out	0	--notitle --notoc
 function sections should produce correct headers	funcsects.in	funcsects.out	0	--notitle --notoc
 script sections should not work in function documentation	scriptfunc.in	scriptfunc.out	1	--notitle --notoc
