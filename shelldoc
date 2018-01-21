@@ -194,6 +194,12 @@ def main():
                         segdict = segments_scriptdoc
                     elif in_fundoc:
                         segdict = segments_fundoc
+                    else:
+                        # We are documenting neither a function nor a script,
+                        # but we have encountered a comment which starts with
+                        # '# .'. We thus assume it is not inteded for us to
+                        # process it and carry on
+                        continue
 
                     if line not in segdict:
                         # handle lines beginning with . that are not valid
