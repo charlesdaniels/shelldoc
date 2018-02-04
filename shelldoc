@@ -6,7 +6,7 @@ import traceback
 import os
 import pathlib
 
-shelldoc_version = "0.0.2-RELEASE"
+shelldoc_version = "0.0.3-git"
 
 def main():
     parser = argparse.ArgumentParser(
