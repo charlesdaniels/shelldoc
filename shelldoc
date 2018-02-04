@@ -6,6 +6,7 @@ import traceback
 import os
 import pathlib
 
+shelldoc_version = "0.0.2-git"
 
 def main():
     parser = argparse.ArgumentParser(
@@ -38,7 +39,8 @@ def main():
                                help="Set the document title to it's basename" +
                                " prefixed with titledepth many parent " +
                                " directories (0 for basename only)")
-
+    parser.add_argument('--version', '-v', action='version',
+                        version="%(prog)s " + shelldoc_version)
     parser.add_argument("--notoc", "-n", action="store_true", default=False,
                         help="Do not include ..contents:: in output")
     parser.add_argument("--notitle", "-e", action="store_true", default=False,
