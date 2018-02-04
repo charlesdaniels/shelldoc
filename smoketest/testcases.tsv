@@ -15,3 +15,5 @@ doctitle and titledepth are mutually exclusive	blank.in	blank.out	2	--notoc --ti
 titledepth works correctly at depth 0	blank.in	depth0.out	0	--notoc --titledepth 0
 titledepth works correctly at depth 1	blank.in	depth1.out	0	--notoc --titledepth 1
 prefix is mutually exclusive with output	blank.in	blank.out	2	--notoc --notitle --prefix /tmp
+non-# comment characters work correctly	commentchar.in	commentchar.out	0	--notoc --notitle --commentchar %
+comment char with nonzero length should fail	blank.in	blank.out	1	--commentchar abc

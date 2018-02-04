@@ -45,7 +45,16 @@ def main():
                         help="Do not include ..contents:: in output")
     parser.add_argument("--notitle", "-e", action="store_true", default=False,
                         help="Do not include the document title in output")
+    parser.add_argument("--commentchar", "-c", default='#', help="Specify " +
+                        "the character which denotes a comment in the " + 
+                        "input source code. Must be a single character. " +
+                        "(default: #)")
     args = parser.parse_args()
+
+    if len(args.commentchar) != 1:
+        sys.stderr.write("FATAL: comment char '{}' is not of length 1\n"
+                         .format(args.commentchar))
+        exit(1)
 
     if args.titledepth is not None:
         if args.titledepth < 0:
@@ -136,11 +145,11 @@ def main():
                                  " this should never happen\n")
                 continue
 
-            if line[0] != '#':
+            if line[0] != args.commentchar:
                 # don't process source code
                 continue
 
-            # strip off '#' and the first leading space
+            # strip off commentchar and the first leading space
             line = line[2:]
 
             if len(line) <= 0:
