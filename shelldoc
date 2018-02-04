@@ -8,7 +8,9 @@ import pathlib
 
 shelldoc_version = "0.0.3-git"
 
+
 def main():
+
     parser = argparse.ArgumentParser(
         description="A tool for documenting shell scripts")
 
@@ -46,7 +48,7 @@ def main():
     parser.add_argument("--notitle", "-e", action="store_true", default=False,
                         help="Do not include the document title in output")
     parser.add_argument("--commentchar", "-c", default='#', help="Specify " +
-                        "the character which denotes a comment in the " + 
+                        "the character which denotes a comment in the " +
                         "input source code. Must be a single character. " +
                         "(default: #)")
     args = parser.parse_args()
